@@ -1,0 +1,27 @@
+<!-- Sidebar -->
+<div id="sidebar-wrapper">
+    <ul class="sidebar-nav">
+        <li class="sidebar-brand">
+            <a>Basic Web App</a>
+        </li>
+        <li>
+            <a href="/">Home</a>
+        </li>
+        <li>
+            <a href="/upload_image">Upload Image</a>
+        </li>
+        {% if logged_in %}
+        <li>
+            <a href="/logout">Logout</a>
+        </li>
+        {% else %}
+        <li>
+            <a href="/login">Login</a>
+        </li>
+        <li>
+            <a href="/register">Register</a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+<!-- /#sidebar-wrapper -->
