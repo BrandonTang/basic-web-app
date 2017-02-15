@@ -22,7 +22,7 @@ def index():
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM posts ORDER BY post_id desc")
     posts = cursor.fetchall()
-    posts = [posts[i:i + 1] for i in range(0, len(posts), 1)]
+    posts = [posts[i:i + 10] for i in range(0, len(posts), 10)]
     conn.commit()
     conn.close()
     posts_index = 0
@@ -42,7 +42,7 @@ def index_posts(posts_index):
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM posts ORDER BY post_id desc")
     posts = cursor.fetchall()
-    posts = [posts[i:i + 1] for i in range(0, len(posts), 1)]
+    posts = [posts[i:i + 10] for i in range(0, len(posts), 10)]
     conn.commit()
     conn.close()
     posts_index = posts_index
