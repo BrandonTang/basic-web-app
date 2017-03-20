@@ -20,9 +20,9 @@ def index():
     username = session.get('username')
     conn = sql.connect("appsec.db", timeout=10)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM posts ORDER BY post_id desc")
+    cursor.execute("SELECT * FROM posts ORDER BY post_id DESC")
     posts = cursor.fetchall()
-    posts = [posts[i:i + 10] for i in range(0, len(posts), 10)]
+    posts = [posts[i:i + 1] for i in range(0, len(posts), 1)]
     conn.commit()
     conn.close()
     posts_index = 0
@@ -40,9 +40,9 @@ def index_posts(posts_index):
     username = session.get('username')
     conn = sql.connect("appsec.db", timeout=10)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM posts ORDER BY post_id desc")
+    cursor.execute("SELECT * FROM posts ORDER BY post_id DESC")
     posts = cursor.fetchall()
-    posts = [posts[i:i + 10] for i in range(0, len(posts), 10)]
+    posts = [posts[i:i + 1] for i in range(0, len(posts), 1)]
     conn.commit()
     conn.close()
     posts_index = posts_index
@@ -103,20 +103,26 @@ def upload_image():
         logged_in = True
     username = session.get('username')
     if request.method == "POST":
+        mimetype_list = ['image/png', 'image/jpeg', 'image/gif']
         image_file = request.files['upload_file']
-        caption = request.form['caption']
-        insert_post(username, image_file.filename, caption)
-        conn = sql.connect("appsec.db", timeout=10)
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM posts WHERE username = ? AND image = ? AND caption = ?",
-                       (username, image_file.filename, caption))
-        post = cursor.fetchone()
-        post_id = post[0]
-        conn.commit()
-        conn.close()
-        image_file.save("./static/uploads/" + str(post_id) + image_file.filename)
-        flash('Image successfully uploaded!', category='success')
-        return render_template('upload_image.html', logged_in=logged_in, username=username)
+        mimetype = image_file.mimetype
+        if mimetype in mimetype_list:
+            caption = request.form['caption']
+            insert_post(username, image_file.filename, caption)
+            conn = sql.connect("appsec.db", timeout=10)
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM posts WHERE username = ? AND image = ? AND caption = ?",
+                           (username, image_file.filename, caption))
+            post = cursor.fetchone()
+            post_id = post[0]
+            conn.commit()
+            conn.close()
+            image_file.save("./static/uploads/" + str(post_id) + image_file.filename)
+            flash('Image successfully uploaded!', category='success')
+            return render_template('upload_image.html', logged_in=logged_in, username=username)
+        else:
+            flash('Uploaded file is an invalid type! Please try uploading again.')
+            return render_template('upload_image.html', logged_in=logged_in, username=username)
     return render_template('upload_image.html', logged_in=logged_in, username=username)
 
 
